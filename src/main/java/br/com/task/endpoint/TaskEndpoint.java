@@ -21,30 +21,45 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.task.model.Task;
 import br.com.task.service.TaskService;
 
+// Indico que é uma api restful
 @RestController
+
+// Neste ponto v1 é a versão da api e será usado dessa forma http://localhost:8080/v1
 @RequestMapping("v1")
 public class TaskEndpoint {
 	
 	private TaskService taskService;
 	
+	// Faço a injeção de dependencia, neste caso do meu servie onde 
+	// contem as regras da aplicação 
 	@Autowired
 	public TaskEndpoint(TaskService taskService) {
 		this.taskService = taskService;
 	}
 	
+	// Estou usando aqui o CrossOrigin para não gerar erro de origem cruzada, 
+	// mas em aplicações mais elaborada é orientado que se faça uma classe separada
+	// para tratar esses cabeçalhos
 	@CrossOrigin(origins = "http://localhost:3000")
+
+	// Metodo para lista tasks, note que findAll é a do meu service que contem a camada de serviços (regras da aplicação)
 	@GetMapping(value = "tasks")
     public ResponseEntity<?> findAll() {
         return new ResponseEntity<>(taskService.findAll(), HttpStatus.OK);
     }
 	
+
 	@CrossOrigin(origins = "http://localhost:3000")
+
+	// Metodo que me retorna apenas 1 registro
 	@GetMapping(value = "task/{id}")
     public ResponseEntity<?> findOne(@PathVariable Integer id) {
         return new ResponseEntity<>(taskService.findOne(id), HttpStatus.OK);
     }
 	
 	@CrossOrigin(origins = "http://localhost:3000")
+
+	// Metodo que salva os dados da task e retorna o próprio objeto.
 	@PostMapping(value = "task")
 	public ResponseEntity<?> insert(@Valid @RequestBody Task obj) {
 		Task task = taskService.insert(obj);
@@ -53,6 +68,8 @@ public class TaskEndpoint {
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
+
+	// Atualiza dados
 	@PutMapping(value = "task/{id}")
 	public ResponseEntity<?> update(@Valid @RequestBody Task obj, @PathVariable Integer id) {
 		obj.setId(id);
@@ -61,6 +78,8 @@ public class TaskEndpoint {
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
+
+	// Deleta dados
 	@DeleteMapping(value = "task/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id) {
 		taskService.delete(id);

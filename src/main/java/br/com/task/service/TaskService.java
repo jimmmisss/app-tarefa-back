@@ -13,12 +13,14 @@ import br.com.task.repository.TaskRepository;
 import br.com.task.service.exceptions.DataIntegrityException;
 import br.com.task.service.exceptions.ObjectNotFoundException;
 
+// Aqui ficam as regras e camada de acesso a dados o que torna muito mais organizado o projeto
 @Service
 public class TaskService {
 	
 	@Autowired
 	private TaskRepository repository;
 	
+    // Lista todas as tasks
     public List<Task> findAll() {
         List<Task> tasks = repository.findAll();
         if(tasks == null)
@@ -26,12 +28,14 @@ public class TaskService {
         return tasks;
     }
     
+    // Lista apenas uma task
     public Task findOne(Integer id) {
         Optional<Task> task = repository.findById(id);
         return task.orElseThrow(() -> new ObjectNotFoundException(
                 "Task não encontrada: " + id + ", tipo: " + Task.class.getName()));
     }
     
+    // Insersão de dados com adicional de data e hora atual do java 8
     public Task insert(Task obj) {
     	LocalDate dataAtual = LocalDate.now();
         obj.setId(null);
@@ -39,12 +43,14 @@ public class TaskService {
         return repository.save(obj);
     }
         
+    // Atualiza e salva a data da atualização    
     public Task update(Task obj) {
         Task newObj = findOne(obj.getId());
         updateData(newObj, obj);
         return repository.save(newObj);
     }
     
+    // Regra para salvar dados sem sobrescrever alguns dados deixando no estado original.
     private void updateData(Task newObj, Task obj) {
     	LocalDate dataUpdate = LocalDate.now();
         newObj.setTitle(obj.getTitle());
@@ -53,6 +59,7 @@ public class TaskService {
         newObj.setUpdated(dataUpdate);
     }
     
+    // Deleta dados
     public void delete(Integer id) {
         findOne(id);
         try {

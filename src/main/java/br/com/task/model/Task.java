@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+// Entidade que é refletida no bando de dados
 @Entity
 public class Task implements Serializable {
 	
